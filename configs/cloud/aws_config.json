@@ -1,0 +1,145 @@
+{
+  "platform": "aws",
+  "description": "Configuration optimisée pour AWS SageMaker",
+  
+  "instance_config": {
+    "recommended_instances": [
+      "ml.p3.2xlarge",
+      "ml.p3.8xlarge", 
+      "ml.p4d.24xlarge",
+      "ml.g4dn.xlarge"
+    ],
+    "auto_detect_instance": true,
+    "use_spot_instances": true,
+    "max_runtime_hours": 24
+  },
+  
+  "model_config": {
+    "model_name": "meta-llama/Llama-2-7b-hf",
+    "use_4bit_quantization": false,
+    "use_8bit_quantization": true,
+    "use_gradient_checkpointing": true,
+    "max_memory_per_gpu": "32GB"
+  },
+  
+  "training_config": {
+    "per_device_train_batch_size": 2,
+    "per_device_eval_batch_size": 2,
+    "gradient_accumulation_steps": 8,
+    "warmup_steps": 100,
+    "num_train_epochs": 3,
+    "learning_rate": 2e-4,
+    "weight_decay": 0.01,
+    "fp16": true,
+    "dataloader_num_workers": 4,
+    "logging_steps": 25,
+    "save_steps": 200,
+    "eval_steps": 200,
+    "save_strategy": "steps",
+    "evaluation_strategy": "steps",
+    "load_best_model_at_end": true,
+    "metric_for_best_model": "eval_loss",
+    "greater_is_better": false,
+    "save_total_limit": 5,
+    "report_to": "wandb",
+    "ddp_find_unused_parameters": false
+  },
+  
+  "lora_config": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.1,
+    "bias": "none",
+    "task_type": "CAUSAL_LM",
+    "target_modules": [
+      "q_proj", "k_proj", "v_proj", "o_proj",
+      "gate_proj", "up_proj", "down_proj"
+    ]
+  },
+  
+  "data_config": {
+    "max_seq_length": 2048,
+    "train_split": 0.9,
+    "eval_split": 0.1,
+    "shuffle": true,
+    "seed": 42,
+    "preprocessing_num_workers": 8
+  },
+  
+  "storage_config": {
+    "s3_bucket": "llama-cybersec-training",
+    "s3_prefix": "models",
+    "checkpoint_s3_path": "s3://llama-cybersec-training/checkpoints",
+    "output_s3_path": "s3://llama-cybersec-training/final-models",
+    "local_checkpoint_path": "/opt/ml/checkpoints",
+    "local_output_path": "/opt/ml/model",
+    "upload_on_checkpoint": true,
+    "sync_frequency": 500
+  },
+  
+  "monitoring_config": {
+    "wandb_project": "llama-cybersec-aws",
+    "wandb_entity": null,
+    "cloudwatch_logging": true,
+    "log_model": true,
+    "log_predictions": false,
+    "track_gradients": true,
+    "custom_metrics": [
+      "gpu_utilization",
+      "memory_usage",
+      "training_throughput"
+    ]
+  },
+  
+  "optimization_config": {
+    "auto_find_batch_size": false,
+    "optim": "adamw_torch",
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_epsilon": 1e-8,
+    "max_grad_norm": 1.0,
+    "warmup_ratio": 0.03,
+    "lr_scheduler_type": "cosine",
+    "use_cpu_offload": false
+  },
+  
+  "distributed_config": {
+    "use_multi_gpu": true,
+    "ddp_backend": "nccl",
+    "find_unused_parameters": false,
+    "gradient_compression": false
+  },
+  
+  "sagemaker_config": {
+    "role": "arn:aws:iam::ACCOUNT:role/SageMakerExecutionRole",
+    "instance_type": "ml.p3.2xlarge",
+    "instance_count": 1,
+    "volume_size": 100,
+    "max_run": 86400,
+    "use_spot_instances": true,
+    "spot_wait_time": 3600,
+    "checkpoint_s3_uri": "s3://llama-cybersec-training/checkpoints",
+    "output_path": "s3://llama-cybersec-training/output",
+    "enable_network_isolation": false,
+    "encrypt_inter_container_traffic": true
+  },
+  
+  "environment_setup": {
+    "python_version": "3.10",
+    "pytorch_version": "2.0.0",
+    "cuda_version": "11.8",
+    "install_requirements": [
+      "torch>=2.0.0",
+      "transformers>=4.30.0",
+      "datasets>=2.12.0",
+      "peft>=0.4.0",
+      "bitsandbytes>=0.39.0",
+      "accelerate>=0.20.0",
+      "wandb>=0.15.0",
+      "boto3>=1.26.0",
+      "sagemaker>=2.100.0"
+    ],
+    "setup_aws_cli": true,
+    "setup_wandb": true
+  }
+}

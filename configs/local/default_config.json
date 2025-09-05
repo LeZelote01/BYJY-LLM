@@ -1,0 +1,116 @@
+{
+  "installation": {
+    "version": "2.0.0",
+    "date": "2025-01-01T00:00:00",
+    "install_dir": "~/.llama-cybersec"
+  },
+  
+  "model": {
+    "default_model_id": "llama-cybersec-q4_0",
+    "models_directory": "models/gguf",
+    "preferred_format": "gguf",
+    "auto_download": false,
+    "model_sources": [
+      "https://huggingface.co/llama-cybersec-official",
+      "https://github.com/CyberSec-LLaMA/models/releases"
+    ]
+  },
+  
+  "inference": {
+    "backend": "llama_cpp",
+    "fallback_backend": "transformers",
+    "device": "auto",
+    "max_tokens": 512,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "top_k": 40,
+    "context_length": 2048,
+    "batch_size": 1,
+    "threads": 0,
+    "use_mmap": true,
+    "use_mlock": false
+  },
+  
+  "web_ui": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 8080,
+    "auto_open_browser": true,
+    "theme": "dark",
+    "max_history_length": 50,
+    "save_conversations": true,
+    "conversations_dir": "conversations"
+  },
+  
+  "api": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 8081,
+    "cors_enabled": true,
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 60,
+      "burst_size": 10
+    },
+    "authentication": {
+      "enabled": false,
+      "api_key": null
+    }
+  },
+  
+  "session_management": {
+    "max_sessions": 10,
+    "session_timeout_minutes": 60,
+    "auto_cleanup": true,
+    "persist_sessions": false
+  },
+  
+  "performance": {
+    "enable_gpu": true,
+    "gpu_memory_fraction": 0.8,
+    "cpu_threads": 0,
+    "memory_limit_gb": 0,
+    "cache_size_mb": 512,
+    "preload_model": true
+  },
+  
+  "security": {
+    "input_validation": true,
+    "output_filtering": true,
+    "max_input_length": 4096,
+    "max_output_length": 2048,
+    "blocked_patterns": [
+      "(?i)(password|secret|key)\\s*[:=]\\s*\\S+",
+      "(?i)credit.card|ssn|social.security"
+    ],
+    "content_policy": {
+      "block_harmful_content": true,
+      "allow_cybersec_examples": true
+    }
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "file_logging": true,
+    "console_logging": true,
+    "log_directory": "logs",
+    "max_log_size_mb": 100,
+    "log_rotation_count": 5,
+    "log_requests": false,
+    "log_responses": false
+  },
+  
+  "updates": {
+    "check_for_updates": true,
+    "auto_update": false,
+    "update_channel": "stable",
+    "update_frequency_hours": 24
+  },
+  
+  "experimental": {
+    "enable_streaming": true,
+    "enable_function_calling": false,
+    "enable_multimodal": false,
+    "enable_voice_input": false
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "platform": "colab",
+  "description": "Configuration optimisée pour Google Colab",
+  
+  "model_config": {
+    "model_name": "meta-llama/Llama-2-7b-hf",
+    "use_4bit_quantization": true,
+    "use_gradient_checkpointing": true,
+    "max_memory_per_gpu": "15GB"
+  },
+  
+  "training_config": {
+    "per_device_train_batch_size": 1,
+    "per_device_eval_batch_size": 1,
+    "gradient_accumulation_steps": 16,
+    "warmup_steps": 100,
+    "num_train_epochs": 3,
+    "learning_rate": 2e-4,
+    "weight_decay": 0.01,
+    "fp16": true,
+    "dataloader_num_workers": 2,
+    "logging_steps": 10,
+    "save_steps": 100,
+    "eval_steps": 100,
+    "save_strategy": "steps",
+    "evaluation_strategy": "steps",
+    "load_best_model_at_end": true,
+    "metric_for_best_model": "eval_loss",
+    "greater_is_better": false,
+    "save_total_limit": 3,
+    "report_to": "wandb"
+  },
+  
+  "lora_config": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.1,
+    "bias": "none",
+    "task_type": "CAUSAL_LM",
+    "target_modules": [
+      "q_proj", "k_proj", "v_proj", "o_proj",
+      "gate_proj", "up_proj", "down_proj"
+    ]
+  },
+  
+  "data_config": {
+    "max_seq_length": 2048,
+    "train_split": 0.9,
+    "eval_split": 0.1,
+    "shuffle": true,
+    "seed": 42
+  },
+  
+  "storage_config": {
+    "use_google_drive": true,
+    "drive_path": "/content/drive/MyDrive/LLaMA_CyberSec",
+    "checkpoint_path": "/content/drive/MyDrive/LLaMA_CyberSec/checkpoints",
+    "output_path": "/content/drive/MyDrive/LLaMA_CyberSec/models"
+  },
+  
+  "monitoring_config": {
+    "wandb_project": "llama-cybersec-colab",
+    "wandb_entity": null,
+    "log_model": true,
+    "log_predictions": false,
+    "track_gradients": false
+  },
+  
+  "optimization_config": {
+    "auto_find_batch_size": true,
+    "optim": "adamw_torch",
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_epsilon": 1e-8,
+    "max_grad_norm": 1.0,
+    "warmup_ratio": 0.03
+  },
+  
+  "environment_setup": {
+    "install_requirements": [
+      "torch>=2.0.0",
+      "transformers>=4.30.0",
+      "datasets>=2.12.0",
+      "peft>=0.4.0",
+      "bitsandbytes>=0.39.0",
+      "accelerate>=0.20.0",
+      "wandb>=0.15.0"
+    ],
+    "mount_drive": true,
+    "check_gpu": true,
+    "setup_wandb": true
+  }
+}

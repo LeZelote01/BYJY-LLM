@@ -1,0 +1,65 @@
+# Core ML libraries for training
+torch>=2.0.0
+transformers>=4.30.0
+datasets>=2.12.0
+tokenizers>=0.13.0
+accelerate>=0.20.0
+
+# LoRA and quantization
+peft>=0.4.0
+bitsandbytes>=0.39.0
+
+# Data processing
+pandas>=1.5.0
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Web interface and API
+flask>=2.3.0
+flask-cors>=4.0.0
+requests>=2.30.0
+
+# Web scraping and parsing (for dataset enrichment)
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Git operations (for downloading sources)
+GitPython>=3.1.0
+
+# Logging and monitoring
+wandb>=0.15.0
+tensorboard>=2.13.0
+
+# System monitoring
+psutil>=5.9.0
+
+# JSON and YAML processing
+pyyaml>=6.0
+jsonlines>=3.1.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Optional: for better performance
+ninja>=1.11.0
+
+# Cloud storage support
+boto3>=1.26.0  # AWS S3
+google-cloud-storage>=2.0.0  # Google Cloud Storage
+azure-storage-blob>=12.0.0  # Azure Blob Storage
+
+# Hugging Face Hub
+huggingface-hub>=0.15.0
+
+# llama.cpp Python bindings (optional)
+llama-cpp-python>=0.2.0
+
+# Development tools (optional)
+pytest>=7.0.0
+black>=23.0.0
+flake8>=6.0.0
+
+# Additional utilities
+click>=8.0.0
+rich>=13.0.0  # For better CLI output
+typer>=0.9.0  # For CLI commands
