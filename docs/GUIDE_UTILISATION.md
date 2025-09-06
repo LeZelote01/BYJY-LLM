@@ -1,4 +1,783 @@
-# 📚 Guide d'Utilisation - LLaMA CyberSec v2.0
+# 📚 Guide d'Utilisation Complet - BYJY-LLM
+
+## 🌟 **Vue d'Ensemble**
+
+BYJY-LLM est un système d'IA hybride local/cloud spécialisé en cybersécurité. Ce guide vous accompagne dans l'utilisation complète du système, de l'installation à l'utilisation avancée.
+
+---
+
+## 🚀 **Démarrage Rapide**
+
+### **1. Installation Express (5 minutes)**
+```bash
+# Clone et installation automatique
+git clone https://github.com/LeZelote01/BYJY-LLM.git
+cd BYJY-LLM
+./install.sh --complete
+
+# Lancement immédiat
+python local_deployment/modern_interface.py
+# → Accès : http://localhost:8080
+```
+
+### **2. Premier Usage**
+1. **Ouvrez votre navigateur** : `http://localhost:8080`
+2. **Testez l'assistant** avec : *"Créer une règle YARA simple"*
+3. **Explorez l'interface** : Chat, analyse de code, rapports
+
+---
+
+## 🏗️ **Architecture Hybride**
+
+### **Principe Fondamental**
+```mermaid
+graph LR
+    A[☁️ Cloud Training] -->|Modèle Entraîné| B[📥 Téléchargement]
+    B --> C[🏠 Interface Locale]
+    C -->|Usage Sécurisé| D[👨‍💻 Utilisateur]
+```
+
+- **Entraînement** : Cloud avec GPU puissants
+- **Utilisation** : Locale pour sécurité et rapidité
+- **Synchronisation** : Automatique et transparente
+
+---
+
+## 🌩️ **Entraînement Cloud**
+
+### **Google Colab (Gratuit et Recommandé)**
+
+#### **Méthode 1 : Notebook Interactif**
+```python
+# Dans Google Colab
+!git clone https://github.com/LeZelote01/BYJY-LLM.git
+%cd BYJY-LLM
+
+# Installation automatique
+!pip install -r requirements.txt
+
+# Entraînement avec interface simple
+!python cloud_training/unified_cloud_trainer.py --platform colab
+```
+
+#### **Méthode 2 : Configuration Avancée**
+```python
+# Configuration personnalisée
+!python cloud_training/unified_cloud_trainer.py \
+  --platform colab \
+  --epochs 5 \
+  --model-name "meta-llama/Llama-2-13b-hf" \
+  --config configs/unified_config.json
+```
+
+### **AWS SageMaker**
+```bash
+# Configuration AWS
+export AWS_REGION=us-east-1
+export AWS_ACCESS_KEY_ID=your-key
+export AWS_SECRET_ACCESS_KEY=your-secret
+
+# Entraînement
+python cloud_training/unified_cloud_trainer.py \
+  --platform aws \
+  --instance-type ml.p3.2xlarge \
+  --epochs 3
+```
+
+### **Azure ML**
+```bash
+# Configuration Azure
+az login
+az account set --subscription "your-subscription-id"
+
+# Entraînement
+python cloud_training/unified_cloud_trainer.py \
+  --platform azure \
+  --vm-size Standard_NC6s_v3 \
+  --resource-group your-rg
+```
+
+---
+
+## 🏠 **Interface Locale Moderne**
+
+### **Lancement Standard**
+```bash
+# Interface complète
+python local_deployment/modern_interface.py
+
+# Accès web : http://localhost:8080
+# WebSocket : ws://localhost:8081  
+# Dashboard : http://localhost:8082
+```
+
+### **Options de Démarrage**
+```bash
+# Port personnalisé
+python local_deployment/modern_interface.py --port 9000
+
+# Mode API uniquement
+python local_deployment/modern_interface.py --api-only
+
+# Mode debug
+python local_deployment/modern_interface.py --debug
+
+# Configuration personnalisée
+python local_deployment/modern_interface.py --config configs/my_config.json
+```
+
+---
+
+## 💬 **Utilisation du Chat**
+
+### **Interface Web**
+1. **Accédez** à `http://localhost:8080`
+2. **Saisissez** votre question dans la zone de texte
+3. **Appuyez** sur Entrée ou cliquez "Envoyer"
+4. **Observez** la réponse streamée en temps réel
+
+### **Exemples de Prompts Efficaces**
+
+#### **🔍 Génération de Règles**
+```
+Prompts optimisés :
+- "Créer une règle YARA pour détecter Emotet"
+- "Générer une règle Sigma pour PowerShell malveillant" 
+- "Écrire une règle Snort pour détecter SQLi"
+```
+
+#### **📊 Analyse de Logs**
+```
+Prompts avec contexte :
+- "Analyser ce log Apache : [coller le log]"
+- "Identifier les attaques dans ces logs Windows Event"
+- "Détecter les IOC dans ce traffic réseau"
+```
+
+#### **🛡️ Audit de Code**
+```
+Prompts spécialisés :
+- "Auditer ce code PHP pour les vulnérabilités"
+- "Analyser cette fonction JavaScript pour XSS"
+- "Identifier les failles dans ce script Python"
+```
+
+---
+
+## 🔌 **API REST**
+
+### **Endpoints Principaux**
+
+#### **Chat API**
+```python
+import requests
+
+# Chat simple
+response = requests.post('http://localhost:8080/api/v2/chat', json={
+    "message": "Expliquer l'attaque CSRF",
+    "session_id": "user_123",
+    "stream": False
+})
+
+print(response.json()['response'])
+```
+
+#### **Chat avec Streaming**
+```python
+import requests
+import json
+
+# Streaming activé
+response = requests.post('http://localhost:8080/api/v2/chat', json={
+    "message": "Créer une règle YARA complexe",
+    "session_id": "user_123", 
+    "stream": True
+}, stream=True)
+
+for line in response.iter_lines():
+    if line:
+        data = json.loads(line.decode('utf-8'))
+        print(data['chunk'], end='', flush=True)
+```
+
+#### **Analyse de Code**
+```python
+# Analyse statique
+response = requests.post('http://localhost:8080/api/v2/analyze', json={
+    "code": """
+    $query = "SELECT * FROM users WHERE id = " . $_GET['id'];
+    mysql_query($query);
+    """,
+    "language": "php"
+})
+
+analysis = response.json()
+print(f"Vulnérabilités : {len(analysis['vulnerabilities'])}")
+for vuln in analysis['vulnerabilities']:
+    print(f"- {vuln['type']} ({vuln['severity']})")
+```
+
+#### **Upload de Fichiers**
+```python
+# Upload pour analyse
+files = {'files': [
+    ('file1', open('vulnerable_script.py', 'rb')),
+    ('file2', open('config.php', 'rb'))
+]}
+
+response = requests.post('http://localhost:8080/api/v2/upload', 
+                        files=files, 
+                        data={'session_id': 'user_123'})
+
+upload_results = response.json()
+for file_result in upload_results['uploaded_files']:
+    print(f"Fichier analysé : {file_result['filename']}")
+```
+
+### **Authentification (Optionnelle)**
+```python
+# Login pour obtenir le token JWT
+login_response = requests.post('http://localhost:8080/api/v2/auth/login', json={
+    "username": "admin",
+    "password": "secure_password"
+})
+
+token = login_response.json()['access_token']
+
+# Utilisation du token
+headers = {'Authorization': f'Bearer {token}'}
+response = requests.post('http://localhost:8080/api/v2/chat', 
+                        json={"message": "Test"}, 
+                        headers=headers)
+```
+
+---
+
+## 🔍 **Analyse de Code Avancée**
+
+### **Upload via Interface Web**
+1. **Cliquez** sur l'onglet "Code Analysis"
+2. **Glissez-déposez** vos fichiers ou cliquez "Upload"
+3. **Sélectionnez** le type d'analyse souhaité
+4. **Consultez** les résultats en temps réel
+
+### **Types d'Analyse Supportés**
+
+#### **Langages Supportés**
+```yaml
+Langages principaux:
+  - Python (.py)
+  - JavaScript (.js, .ts)
+  - PHP (.php)
+  - Java (.java)
+  - C/C++ (.c, .cpp, .h)
+  - C# (.cs)
+  - Go (.go)
+  - Rust (.rs)
+  - SQL (.sql)
+  - Bash/Shell (.sh, .bash)
+```
+
+#### **Types de Vulnérabilités Détectées**
+```yaml
+Sécurité Web:
+  - Injection SQL
+  - Cross-Site Scripting (XSS)
+  - Cross-Site Request Forgery (CSRF)
+  - Path Traversal
+  - Command Injection
+
+Sécurité Applicative:
+  - Buffer Overflow
+  - Use After Free
+  - Integer Overflow
+  - Race Conditions
+  - Insecure Randomness
+
+Bonnes Pratiques:
+  - Code Smell
+  - Performance Issues
+  - Maintainability
+  - Security Hardening
+```
+
+---
+
+## 📋 **Génération de Rapports**
+
+### **Rapports Automatiques**
+```python
+# Génération via API
+response = requests.post('http://localhost:8080/api/v2/reports/generate', json={
+    "session_id": "user_123",
+    "report_type": "security_audit",
+    "format": "pdf",  # ou "html", "json"
+    "include_recommendations": True
+})
+
+report_id = response.json()['report_id']
+
+# Téléchargement du rapport
+report_url = f"http://localhost:8080/api/v2/reports/{report_id}/download"
+```
+
+### **Types de Rapports**
+```yaml
+Rapports disponibles:
+  - security_audit: Audit de sécurité complet
+  - vulnerability_scan: Scan de vulnérabilités
+  - code_review: Revue de code détaillée
+  - threat_analysis: Analyse de menaces
+  - incident_response: Rapport d'incident
+  - compliance_check: Vérification conformité
+```
+
+---
+
+## ⚙️ **Configuration Avancée**
+
+### **Fichier de Configuration Principal**
+```json
+// configs/unified_config.json
+{
+  "deployment": {
+    "mode": "hybrid",           // "local", "cloud", "hybrid"
+    "local_enabled": true,
+    "cloud_enabled": true,
+    "priority": "local"         // "local" ou "cloud"
+  },
+  
+  "model": {
+    "name": "meta-llama/Llama-2-7b-hf",
+    "max_seq_length": 2048,
+    "preferred_format": "gguf", // "gguf", "transformers"
+    "auto_download": true
+  },
+  
+  "inference": {
+    "temperature": 0.7,         // Créativité (0.1-1.0)
+    "top_p": 0.9,              // Diversité  
+    "max_tokens": 512,         // Longueur réponse max
+    "streaming": true,         // Streaming temps réel
+    "context_length": 2048     // Contexte conversation
+  },
+  
+  "security": {
+    "input_validation": true,   // Validation entrées
+    "content_filtering": true,  // Filtrage contenu
+    "rate_limiting": true,      // Limitation requêtes
+    "max_input_length": 8192   // Taille max input
+  }
+}
+```
+
+### **Variables d'Environnement**
+```bash
+# Monitoring et Alertes
+export WANDB_API_KEY="votre-clé-wandb" 
+export WANDB_PROJECT="llama-cybersec"
+export DISCORD_WEBHOOK_URL="votre-webhook-discord"
+export ALERT_EMAIL="admin@domain.com"
+
+# Configuration Cloud
+export AWS_REGION="us-east-1"
+export AWS_ACCESS_KEY_ID="votre-clé-aws"
+export AZURE_SUBSCRIPTION_ID="votre-id-azure"
+export GCP_PROJECT_ID="votre-projet-gcp"
+
+# Sécurité
+export JWT_SECRET_KEY="votre-clé-secrète-jwt"
+export API_RATE_LIMIT="100"  # requêtes/minute
+```
+
+---
+
+## 🔧 **Gestion des Modèles**
+
+### **Modèles Disponibles**
+```bash
+# Lister les modèles disponibles
+python utils/model_manager.py --list
+
+# Informations détaillées
+python utils/model_manager.py --info --model-id "llama-cybersec-v2"
+```
+
+### **Installation de Nouveaux Modèles**
+```bash
+# Modèle depuis Hugging Face
+python utils/model_manager.py --install \
+  --model-id "llama-cybersec-v3" \
+  --source "huggingface:meta-llama/Llama-2-13b-hf"
+
+# Modèle depuis URL directe
+python utils/model_manager.py --install \
+  --model-id "custom-model" \
+  --source "https://example.com/model.gguf"
+
+# Modèle depuis fichier local
+python utils/model_manager.py --install \
+  --model-id "local-model" \
+  --source "file:///path/to/model.gguf"
+```
+
+### **Changement de Modèle**
+```bash
+# Via CLI
+python utils/model_manager.py --set-active --model-id "llama-cybersec-v3"
+
+# Via API
+curl -X POST http://localhost:8080/api/v2/models/switch \
+  -H "Content-Type: application/json" \
+  -d '{"model_id": "llama-cybersec-v3"}'
+```
+
+---
+
+## 🛠️ **Plugins et Extensions**
+
+### **Plugins Intégrés**
+```yaml
+Plugins disponibles:
+  - code_analyzer: Analyse de code multi-langages
+  - vulnerability_scanner: Scan de vulnérabilités
+  - report_generator: Génération de rapports
+  - network_analyzer: Analyse réseau et PCAP
+  - log_analyzer: Analyse de logs système
+  - threat_intelligence: Intelligence des menaces
+```
+
+### **Activation/Désactivation des Plugins**
+```python
+# Via API
+requests.post('http://localhost:8080/api/v2/plugins/enable', json={
+    "plugin_name": "vulnerability_scanner",
+    "config": {
+        "scan_depth": "deep",
+        "include_dependencies": True
+    }
+})
+
+# Désactivation
+requests.post('http://localhost:8080/api/v2/plugins/disable', json={
+    "plugin_name": "vulnerability_scanner"
+})
+```
+
+### **Développement de Plugins Personnalisés**
+```python
+# Structure basique d'un plugin
+# plugins/my_plugin.py
+
+class MySecurityPlugin:
+    def __init__(self, interface):
+        self.interface = interface
+        self.name = "my_security_plugin"
+        self.version = "1.0.0"
+    
+    def analyze(self, data):
+        # Votre logique d'analyse
+        results = {
+            'findings': [],
+            'recommendations': [],
+            'score': 0
+        }
+        return results
+    
+    def get_config_schema(self):
+        return {
+            "type": "object",
+            "properties": {
+                "severity_threshold": {"type": "string", "enum": ["low", "medium", "high"]},
+                "include_details": {"type": "boolean"}
+            }
+        }
+```
+
+---
+
+## 📊 **Monitoring et Métriques**
+
+### **Dashboard de Monitoring**
+Accédez au dashboard : `http://localhost:8082`
+
+#### **Métriques Disponibles**
+```yaml
+Système:
+  - CPU utilization
+  - Memory usage  
+  - GPU utilization (si disponible)
+  - Disk I/O
+
+Application:
+  - Requests per minute
+  - Response time average
+  - Active sessions
+  - Error rate
+
+Modèle:
+  - Inference speed
+  - Token throughput
+  - Cache hit rate
+  - Model memory usage
+```
+
+### **Intégration Weights & Biases**
+```python
+# Configuration W&B
+import wandb
+
+wandb.login(key="votre-clé-wandb")
+
+# Le système log automatiquement :
+# - Métriques de performance
+# - Historique des conversations
+# - Erreurs et alertes
+# - Utilisation des ressources
+```
+
+---
+
+## 🚨 **Dépannage**
+
+### **Problèmes Fréquents**
+
+#### **1. Modèle ne se charge pas**
+```bash
+# Diagnostic
+python utils/model_manager.py --validate --model-id "votre-modele"
+
+# Solutions possibles
+# A. Réinstaller le modèle
+python utils/model_manager.py --install --model-id "votre-modele" --force
+
+# B. Vérifier l'espace disque
+df -h /app/models/
+
+# C. Vérifier les permissions
+chmod -R 755 /app/models/
+```
+
+#### **2. Interface web inaccessible**
+```bash
+# Vérifier les ports
+netstat -an | grep 8080
+lsof -i :8080
+
+# Tester avec port différent
+python local_deployment/modern_interface.py --port 8081
+
+# Vérifier les logs
+tail -f /app/logs/modern_interface_*.log
+```
+
+#### **3. Erreurs de mémoire**
+```json
+// Réduction dans unified_config.json
+{
+  "model": {
+    "max_seq_length": 1024  // Réduire de 2048
+  },
+  "inference": {
+    "batch_size": 1,
+    "context_length": 1024
+  },
+  "optimization": {
+    "use_4bit_quantization": true,
+    "memory_efficient_attention": true
+  }
+}
+```
+
+#### **4. Entraînement cloud échoue**
+```bash
+# Vérifier les credentials cloud
+# AWS
+aws sts get-caller-identity
+
+# Azure  
+az account show
+
+# GCP
+gcloud auth list
+
+# Logs détaillés
+python cloud_training/unified_cloud_trainer.py --debug --verbose
+```
+
+#### **5. Dataset non trouvé**
+```bash
+# Recréer le dataset
+python scripts/dataset_manager.py --create-initial
+
+# Enrichir depuis les sources
+python scripts/dataset_manager.py --enrich-all --max-examples 1000
+
+# Valider le dataset
+python scripts/dataset_manager.py --validate
+```
+
+### **Logs et Diagnostics**
+```bash
+# Logs principaux
+tail -f /app/logs/modern_interface_*.log     # Interface web
+tail -f /app/logs/unified_training_*.log     # Entraînement
+tail -f /app/logs/performance.log            # Performance
+tail -f /app/logs/errors.log                # Erreurs
+
+# Diagnostic système
+python utils/system_diagnostics.py --full
+
+# Tests de connectivité
+python utils/connectivity_test.py --all-services
+```
+
+---
+
+## 🔐 **Sécurité et Bonnes Pratiques**
+
+### **Configuration Sécurisée**
+```json
+{
+  "security": {
+    "input_validation": true,
+    "content_filtering": true,  
+    "sql_injection_detection": true,
+    "xss_protection": true,
+    "csrf_protection": true,
+    "rate_limiting": true,
+    "max_input_length": 4096,
+    "secure_headers": true,
+    "encrypt_sensitive_data": true
+  },
+  "api": {
+    "auth_required": true,
+    "auth_type": "jwt",
+    "rate_limiting": {
+      "requests_per_minute": 30,
+      "requests_per_hour": 500
+    }
+  }
+}
+```
+
+### **Authentification et Autorisation**
+```python
+# Création d'utilisateur admin
+python utils/user_manager.py --create-admin \
+  --username admin \
+  --email admin@domain.com \
+  --password secure_password_123
+
+# Attribution des rôles
+python utils/user_manager.py --assign-role \
+  --username user123 \
+  --role analyst  # analyst, admin, viewer
+```
+
+### **Audit et Conformité**
+```bash
+# Audit de sécurité complet
+python utils/security_audit.py --comprehensive
+
+# Rapport de conformité
+python utils/compliance_check.py --standard SOC2
+
+# Vérification des vulnérabilités
+python utils/vulnerability_check.py --all-components
+```
+
+---
+
+## 📚 **Ressources Supplémentaires**
+
+### **Documentation Technique**
+- [Architecture Détaillée](ARCHITECTURE.md)
+- [Guide API REST](API.md) 
+- [Configuration Avancée](CONFIGURATION.md)
+- [Guide Développeur](DEVELOPMENT.md)
+- [Sécurité](SECURITY.md)
+
+### **Communauté et Support**
+- **GitHub Issues** : [Signaler un problème](https://github.com/LeZelote01/BYJY-LLM/issues)
+- **Discussions** : [Forum communautaire](https://github.com/LeZelote01/BYJY-LLM/discussions)
+- **Discord** : [Serveur BYJY-LLM](https://discord.gg/byjy-llm)
+
+### **Tutoriels Vidéo**
+- [Installation et Premier Usage](https://youtube.com/watch?v=example1)
+- [Entraînement Cloud sur Colab](https://youtube.com/watch?v=example2)
+- [Analyse de Code Avancée](https://youtube.com/watch?v=example3)
+- [Génération de Rapports](https://youtube.com/watch?v=example4)
+
+---
+
+## 🎯 **Cas d'Usage Avancés**
+
+### **1. SOC (Security Operations Center)**
+```python
+# Intégration avec SIEM
+siem_logs = get_siem_logs(last_24h=True)
+
+for log_entry in siem_logs:
+    analysis = requests.post('http://localhost:8080/api/v2/analyze', json={
+        "content": log_entry,
+        "type": "security_log"
+    })
+    
+    if analysis.json()['threat_level'] > 7:
+        create_incident(log_entry, analysis.json())
+```
+
+### **2. Code Review Automatisé**
+```python
+# Intégration CI/CD
+def security_code_review(pr_files):
+    results = []
+    
+    for file_path in pr_files:
+        with open(file_path, 'r') as f:
+            code = f.read()
+        
+        analysis = requests.post('http://localhost:8080/api/v2/analyze', json={
+            "code": code,
+            "language": detect_language(file_path),
+            "context": "ci_cd_pipeline"
+        })
+        
+        results.append({
+            'file': file_path,
+            'vulnerabilities': analysis.json()['vulnerabilities'],
+            'recommendations': analysis.json()['recommendations']
+        })
+    
+    return results
+```
+
+### **3. Threat Hunting**
+```python
+# Recherche proactive de menaces
+def hunt_apt_indicators():
+    indicators = [
+        "powershell -enc",
+        "certutil -decode", 
+        "bitsadmin /transfer"
+    ]
+    
+    for indicator in indicators:
+        query = f"Analyser cet indicateur APT : {indicator}"
+        
+        response = requests.post('http://localhost:8080/api/v2/chat', json={
+            "message": query,
+            "context": "threat_hunting"
+        })
+        
+        print(f"Analyse {indicator}:")
+        print(response.json()['response'])
+```
+
+---
+
+Ce guide complet vous permet d'exploiter toutes les capacités de BYJY-LLM. Pour des questions spécifiques, consultez la documentation technique ou contactez la communauté via GitHub ou Discord.
 
 Guide complet pour utiliser le système LLaMA-3-8B Cybersécurité avec architecture cloud/local.
 

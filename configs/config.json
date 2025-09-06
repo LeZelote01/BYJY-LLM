@@ -1,0 +1,327 @@
+{
+  "_metadata": {
+    "version": "2.0.0",
+    "created": "2025-01-01",
+    "description": "Configuration unifiée pour BYJY-LLM avec architecture hybride local/cloud",
+    "last_updated": "2025-01-01"
+  },
+  
+  "deployment": {
+    "mode": "hybrid",
+    "local_enabled": true,
+    "cloud_enabled": true,
+    "auto_switch": true,
+    "priority": "local"
+  },
+  
+  "model": {
+    "name": "meta-llama/Llama-2-7b-hf",
+    "alternative_models": [
+      "meta-llama/Llama-2-13b-hf",
+      "microsoft/DialoGPT-medium",
+      "microsoft/DialoGPT-large"
+    ],
+    "max_seq_length": 2048,
+    "trust_remote_code": true,
+    "preferred_format": "gguf",
+    "fallback_format": "transformers"
+  },
+  
+  "training": {
+    "num_epochs": 3,
+    "learning_rate": 2e-4,
+    "warmup_ratio": 0.03,
+    "weight_decay": 0.01,
+    "lr_scheduler": "cosine",
+    "gradient_checkpointing": true,
+    "dataloader_num_workers": 4,
+    "save_strategy": "steps",
+    "save_steps": 500,
+    "eval_strategy": "steps",
+    "eval_steps": 500,
+    "logging_steps": 50,
+    "report_to": ["wandb", "tensorboard"],
+    "per_device_train_batch_size": 1,
+    "gradient_accumulation_steps": 16,
+    "max_grad_norm": 1.0,
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_epsilon": 1e-8
+  },
+  
+  "lora": {
+    "r": 16,
+    "alpha": 32,
+    "dropout": 0.1,
+    "target_modules": [
+      "q_proj", "k_proj", "v_proj", "o_proj",
+      "gate_proj", "up_proj", "down_proj"
+    ],
+    "bias": "none",
+    "task_type": "CAUSAL_LM"
+  },
+  
+  "optimization": {
+    "use_4bit_quantization": true,
+    "use_nested_quantization": true,
+    "bnb_4bit_compute_dtype": "float16",
+    "bnb_4bit_quant_type": "nf4",
+    "fp16": true,
+    "tf32": true,
+    "gradient_accumulation_adaptive": true,
+    "enable_flash_attention": true,
+    "memory_efficient_attention": true
+  },
+  
+  "inference": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "top_k": 50,
+    "max_tokens": 512,
+    "context_length": 2048,
+    "repetition_penalty": 1.1,
+    "do_sample": true,
+    "early_stopping": true,
+    "num_beams": 1,
+    "streaming": true,
+    "batch_size": 1
+  },
+  
+  "local_interface": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 8080,
+    "ssl_enabled": false,
+    "ssl_cert_path": "",
+    "ssl_key_path": "",
+    "cors_enabled": true,
+    "cors_origins": ["*"],
+    "websocket_enabled": true,
+    "websocket_port": 8081,
+    "max_concurrent_sessions": 50,
+    "session_timeout": 3600,
+    "enable_file_upload": true,
+    "max_file_size_mb": 100,
+    "allowed_file_types": [".py", ".js", ".php", ".java", ".cpp", ".c", ".cs", ".go", ".rs", ".txt", ".md", ".json", ".xml", ".yaml", ".yml"]
+  },
+  
+  "api": {
+    "enabled": true,
+    "version": "v2",
+    "base_path": "/api/v2",
+    "auth_required": false,
+    "auth_type": "jwt",
+    "jwt_secret": "your-secret-key",
+    "jwt_expiry_hours": 24,
+    "rate_limiting": {
+      "enabled": true,
+      "requests_per_minute": 60,
+      "requests_per_hour": 1000
+    },
+    "documentation": {
+      "enabled": true,
+      "swagger_ui": true,
+      "redoc": true
+    }
+  },
+  
+  "database": {
+    "type": "sqlite",
+    "path": "/app/data/llama_cybersec.db",
+    "backup_enabled": true,
+    "backup_interval_hours": 24,
+    "retention_days": 30,
+    "vacuum_interval_days": 7
+  },
+  
+  "monitoring": {
+    "enabled": true,
+    "wandb_project": "llama-cybersec-unified",
+    "wandb_enabled": true,
+    "tensorboard_enabled": true,
+    "log_predictions": true,
+    "track_gpu_memory": true,
+    "track_cpu_usage": true,
+    "track_network_io": true,
+    "alert_on_error": true,
+    "alert_on_performance_drop": true,
+    "metrics_retention_days": 30,
+    "dashboard_enabled": true,
+    "dashboard_port": 8082
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s",
+    "file_enabled": true,
+    "console_enabled": true,
+    "rotation": {
+      "enabled": true,
+      "max_size_mb": 100,
+      "backup_count": 5
+    },
+    "structured_logging": true,
+    "log_requests": true,
+    "log_responses": false,
+    "sensitive_data_masking": true
+  },
+  
+  "security": {
+    "input_validation": true,
+    "max_input_length": 8192,
+    "content_filtering": true,
+    "sql_injection_detection": true,
+    "xss_protection": true,
+    "csrf_protection": true,
+    "rate_limiting": true,
+    "ip_whitelist": [],
+    "ip_blacklist": [],
+    "secure_headers": true,
+    "encrypt_sensitive_data": true
+  },
+  
+  "dataset": {
+    "auto_enrich": true,
+    "max_examples": 5000,
+    "quality_threshold": 0.8,
+    "parallel_downloads": 10,
+    "cache_enabled": true,
+    "cache_duration_hours": 24,
+    "sources": {
+      "github_repos": [
+        "SigmaHQ/sigma",
+        "Yara-Rules/rules", 
+        "MITRE/attack-patterns",
+        "volatilityfoundation/volatility",
+        "fireeye/flare-vm",
+        "sans-blue-team/DeepBlueCLI",
+        "Neo23x0/sigma",
+        "elastic/detection-rules",
+        "splunk/security_content",
+        "chronicle/detection-rules"
+      ],
+      "public_datasets": [
+        "https://raw.githubusercontent.com/MITRE/cti/master/attack-patterns/",
+        "https://rules.emergingthreats.net/fwrules/",
+        "https://www.malware-traffic-analysis.net/training-exercises.html"
+      ],
+      "vulnerability_feeds": [
+        "https://services.nvd.nist.gov/rest/json/cves/1.0/",
+        "https://cve.mitre.org/data/downloads/allitems.csv"
+      ]
+    }
+  },
+  
+  "cloud": {
+    "auto_upload": true,
+    "backup_frequency": "hourly",
+    "storage_providers": ["s3", "gcs", "azure"],
+    "compression": true,
+    "encryption": true,
+    "sync_enabled": true,
+    "platforms": {
+      "colab": {
+        "enabled": true,
+        "mount_drive": true,
+        "gpu_optimization": true
+      },
+      "aws": {
+        "enabled": true,
+        "region": "us-east-1",
+        "instance_type": "ml.p3.2xlarge"
+      },
+      "azure": {
+        "enabled": true,
+        "region": "eastus",
+        "vm_size": "Standard_NC6s_v3"
+      },
+      "gcp": {
+        "enabled": true,
+        "region": "us-central1",
+        "machine_type": "n1-standard-4"
+      }
+    }
+  },
+  
+  "plugins": {
+    "enabled": true,
+    "auto_load": true,
+    "directory": "/app/plugins",
+    "builtin_plugins": [
+      "code_analyzer",
+      "report_generator", 
+      "vulnerability_scanner",
+      "network_analyzer",
+      "log_analyzer",
+      "threat_intelligence"
+    ],
+    "external_plugins": []
+  },
+  
+  "paths": {
+    "project_root": "/app",
+    "models": "/app/models",
+    "datasets": "/app/datasets",
+    "logs": "/app/logs",
+    "uploads": "/app/uploads",
+    "reports": "/app/reports",
+    "cache": "/app/cache",
+    "tmp": "/tmp/llama_cybersec",
+    "checkpoints": "/app/checkpoints",
+    "backups": "/app/backups"
+  },
+  
+  "performance": {
+    "enable_gpu": true,
+    "gpu_memory_fraction": 0.9,
+    "cpu_threads": 0,
+    "cache_size_mb": 512,
+    "preload_model": true,
+    "model_cache_enabled": true,
+    "response_cache_enabled": true,
+    "response_cache_ttl": 300,
+    "async_processing": true,
+    "batch_processing": false
+  },
+  
+  "updates": {
+    "auto_check": true,
+    "check_interval_hours": 24,
+    "auto_update": false,
+    "backup_before_update": true,
+    "rollback_enabled": true
+  },
+  
+  "experimental": {
+    "multimodal_support": false,
+    "voice_interface": false,
+    "federated_learning": false,
+    "blockchain_logging": false,
+    "quantum_encryption": false
+  },
+  
+  "alerts": {
+    "enabled": true,
+    "email": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "sender": "",
+      "recipients": [],
+      "tls_enabled": true
+    },
+    "discord": {
+      "enabled": false,
+      "webhook_url": ""
+    },
+    "slack": {
+      "enabled": false,
+      "webhook_url": ""
+    },
+    "webhook": {
+      "enabled": false,
+      "url": "",
+      "headers": {}
+    }
+  }
+}
