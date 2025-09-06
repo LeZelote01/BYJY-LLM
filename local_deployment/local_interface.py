@@ -32,7 +32,7 @@ import mimetypes
 import zipfile
 import tempfile
 
-from flask import Flask, request, jsonify, render_template_string, session, websocket
+from flask import Flask, request, jsonify, render_template_string, session
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit, disconnect
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -50,6 +50,34 @@ class ModernLLaMAInterface:
         # Configuration
         self.config_path = config_path or self.find_config()
         self.config = self.load_config()
+    
+    def find_config(self):
+        """Find configuration file"""
+        possible_paths = [
+            "/app/configs/config.json",
+            Path.cwd() / "configs" / "config.json",
+            Path.home() / ".llama-cybersec" / "config.json"
+        ]
+        
+        for path in possible_paths:
+            if Path(path).exists():
+                return str(path)
+        
+        # Return default path
+        return "/app/configs/config.json"
+    
+    def load_config(self):
+        """Load configuration from file"""
+        try:
+            with open(self.config_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            # Return minimal default config
+            return {
+                "installation": {"install_dir": "/tmp/llama-cybersec"},
+                "web_ui": {"host": "127.0.0.1", "port": 8080},
+                "model": {"name": "test-model"}
+            }
         
         # Paths
         self.install_dir = Path(self.config["installation"]["install_dir"])

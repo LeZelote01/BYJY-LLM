@@ -665,7 +665,7 @@ wmic /node:192.168.1.10 /user:admin /password:pass process call create "calc.exe
             {
                 "instruction": "Audit de sécurité de ce code Python Flask et recommandations",
                 "input": "Code Flask avec vulnérabilités",
-                "output": "# Audit de Sécurité - Code Flask
+                "output": """# Audit de Sécurité - Code Flask
 
 ## ❌ Vulnérabilités Identifiées
 
@@ -714,7 +714,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def get_db_connection():
-    """Connexion sécurisée à la base de données"""
+    \"\"\"Connexion sécurisée à la base de données\"\"\"
     try:
         conn = sqlite3.connect('users.db')
         conn.row_factory = sqlite3.Row
@@ -753,21 +753,6 @@ def get_user(username):
         return "Database error", 500
     finally:
         conn.close()
-
-# Template sécurisé (user.html)
-```
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>User Profile</title>
-</head>
-<body>
-    <h1>User: {{ username|e }}</h1>
-    <p>Email: {{ email|e }}</p>
-</body>
-</html>
 ```
 
 ## 🛡️ Recommandations Additionnelles
